@@ -1,0 +1,1 @@
+org.springframework.boot.env.EnvironmentPostProcessor=io.github.ztoany.versa.infra.springboot.starter.logging.application.DefaultCustomizedLoggingEnvironmentPostProcessor

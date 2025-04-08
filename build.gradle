@@ -1,0 +1,99 @@
+import com.vanniktech.maven.publish.SonatypeHost
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
+plugins {
+    id 'org.springframework.boot' version "${springBootVersion}" apply false
+    id 'io.spring.dependency-management' version "${springDepMgmtVersion}" apply false
+    id "com.vanniktech.maven.publish" version "${mavenPublishPluginVersion}" apply false
+}
+
+allprojects {
+    group = "${projectUnifiedGroup}"
+    version = "${projectUnifiedVersion}"
+}
+
+subprojects { project ->
+    if(isRealProject(project.name)) {
+        apply plugin: 'java-library'
+        apply plugin: 'com.vanniktech.maven.publish'
+
+        java {
+            toolchain {
+                languageVersion = JavaLanguageVersion.of(21)
+            }
+        }
+
+        repositories {
+            mavenCentral()
+            mavenLocal()
+        }
+
+        if(isSpringbootProject(project.name)) {
+            apply plugin: 'io.spring.dependency-management'
+
+            dependencyManagement {
+                imports {
+                    mavenBom SpringBootPlugin.BOM_COORDINATES
+                }
+            }
+
+            dependencies {
+                testImplementation 'org.springframework.boot:spring-boot-starter-test'
+                testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+            }
+        } else {
+            dependencies {
+                testImplementation platform("org.junit:junit-bom:${junitVersion}")
+                testImplementation 'org.junit.jupiter:junit-jupiter'
+            }
+        }
+
+        test {
+            useJUnitPlatform()
+        }
+
+        mavenPublishing {
+            pom {
+                name = 'versa-one'
+                description = 'Versa One'
+                url = 'https://github.com/ztoany/versa-one'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'ztoany'
+                        name = 'ztoany'
+                        email = 'marvin.m.huang@outlook.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/ztoany/versa-one.git'
+                    developerConnection = 'scm:git:ssh://github.com:ztoany/versa-one.git'
+                    url = 'https://github.com/ztoany/versa-one/'
+                }
+            }
+
+            // publishing to https://central.sonatype.com/
+            publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+
+            signAllPublications()
+        }
+    }
+}
+
+static def isRealProject(String projectName) {
+    return projectName != "versa-springboot-starters"
+}
+
+
+static def isSpringbootProject(String projectName) {
+    Set<String> springbootProjects = [
+            "versa-springboot"
+    ] as Set
+
+    return springbootProjects.contains(projectName) || projectName.endsWith("boot-starter")
+}

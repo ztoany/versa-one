@@ -1,0 +1,7 @@
+dependencies {
+    api project(":versa-infra-common")
+    api 'org.springframework.boot:spring-boot-starter'
+    api 'org.springframework:spring-webmvc'
+    api 'org.slf4j:slf4j-api'
+    api 'jakarta.servlet:jakarta.servlet-api'
+}

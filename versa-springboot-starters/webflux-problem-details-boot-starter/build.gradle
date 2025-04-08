@@ -1,0 +1,6 @@
+dependencies {
+    api project(":versa-infra-common")
+    api 'org.springframework.boot:spring-boot-starter'
+    api 'org.springframework:spring-webflux'
+    api 'org.slf4j:slf4j-api'
+}
