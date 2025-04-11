@@ -23,7 +23,7 @@ example:
   "detail": "Customer 221878244612243451 not found",
   "instance": "/api/v1/customers/221878244612243451",
   "code": "E10000001",
-  "timestamp": "2024-09-04T06:35:47.923+00:00"
+  "timestamp": "2025-04-11T13:02:28.557745Z"
 }
 ```
 
@@ -55,6 +55,6 @@ example:
       "message": "name is required"
     }
   ],
-  "timestamp": "2024-09-04T06:43:31.604+00:00"
+  "timestamp": "2025-04-11T13:02:28.557745Z"
 }
 ```

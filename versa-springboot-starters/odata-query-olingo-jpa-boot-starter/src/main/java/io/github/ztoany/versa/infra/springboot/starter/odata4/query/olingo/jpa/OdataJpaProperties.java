@@ -12,6 +12,7 @@ import java.util.List;
 public class OdataJpaProperties {
     @Pattern(regexp = "^(\\/?[\\w\\-\\/]+[^\\/])$", message = "invalid path mapping, path can not end with /")
     private String pathMapping = "/api/odata";
+    private Boolean enableProblemDetails = true;
     private Jpa jpa = new Jpa();
 
     public String getPathMapping() {
@@ -20,6 +21,14 @@ public class OdataJpaProperties {
 
     public void setPathMapping(String pathMapping) {
         this.pathMapping = pathMapping;
+    }
+
+    public Boolean getEnableProblemDetails() {
+        return enableProblemDetails;
+    }
+
+    public void setEnableProblemDetails(Boolean enableProblemDetails) {
+        this.enableProblemDetails = enableProblemDetails;
     }
 
     public Jpa getJpa() {

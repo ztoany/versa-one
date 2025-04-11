@@ -1,5 +1,6 @@
 package io.github.ztoany.versa.infra.springboot.starter.odata4.query.olingo.jpa;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sap.olingo.jpa.processor.core.api.JPAODataRequestContext;
 import com.sap.olingo.jpa.processor.core.api.JPAODataServiceContext;
 import com.sap.olingo.jpa.processor.core.api.JPAODataSessionContextAccess;
@@ -23,7 +24,10 @@ import java.util.List;
 @ComponentScan("io.github.ztoany.versa.infra.springboot.starter.odata4.query.olingo.jpa.controller")
 public class Odata4QueryOlingoJpaAutoConfiguration {
     @Bean
-    public JPAODataSessionContextAccess sessionContext(OdataJpaProperties properties, EntityManagerFactory emf)
+    public JPAODataSessionContextAccess sessionContext(
+            OdataJpaProperties properties,
+            EntityManagerFactory emf,
+            ObjectMapper objectMapper)
             throws ODataException {
         String pUnitName = properties.getJpa().getPersistenceUnitName();
         List<String> typePackages = properties.getJpa().getTypePackages();
@@ -34,6 +38,7 @@ public class Odata4QueryOlingoJpaAutoConfiguration {
                 .setTypePackage(typePackages.toArray(new String[0]))
                 .setRequestMappingPath(properties.getPathMapping())
                 .setEdmNameBuilder(new JPACustomEdmNameBuilder(pUnitName, properties.getJpa().getPropNameFirstToLower()))
+                .setErrorProcessor(properties.getEnableProblemDetails() ? new ProblemDetailsErrorProcessor(objectMapper) : null)
                 .build();
     }
 
