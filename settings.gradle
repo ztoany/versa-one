@@ -14,4 +14,7 @@ include 'versa-springboot-starters:webflux-problem-details-boot-starter'
 findProject(':versa-springboot-starters:webflux-problem-details-boot-starter')?.name = 'webflux-problem-details-boot-starter'
 include 'versa-springboot-starters:odata-query-olingo-jpa-boot-starter'
 findProject(':versa-springboot-starters:odata-query-olingo-jpa-boot-starter')?.name = 'odata-query-olingo-jpa-boot-starter'
+include 'versa-business-common'
+include 'versa-springboot-starters:business-service-boot-starter'
+findProject(':versa-springboot-starters:business-service-boot-starter')?.name = 'business-service-boot-starter'
 
