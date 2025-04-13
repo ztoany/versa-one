@@ -1,0 +1,6 @@
+dependencies {
+    api project(":versa-infra-common")
+    api "com.sap.olingo:odata-jpa-processor:${sapOdataJpaVersion}"
+    api 'org.springframework.boot:spring-boot-starter-web'
+    api 'org.springframework.boot:spring-boot-starter-validation'
+}

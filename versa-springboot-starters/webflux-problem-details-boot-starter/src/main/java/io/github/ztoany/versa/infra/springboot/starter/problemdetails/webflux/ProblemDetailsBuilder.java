@@ -5,7 +5,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class ProblemDetailsBuilder {
     }
 
     public static void timestamp(ProblemDetail problemDetail) {
-        problemDetail.setProperty(TIMESTAMP_FIELD, Date.from(Instant.now()));
+        problemDetail.setProperty(TIMESTAMP_FIELD, Instant.now());
     }
 
     public static void violations(ProblemDetail problemDetail, BindingResult bindingResult) {
