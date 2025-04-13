@@ -1,4 +1,4 @@
-package io.github.ztoany.versa.infra.springboot.starter.odata4.query.olingo.jpa.requestwrapper;
+package io.github.ztoany.versa.infra.springboot.starter.odata4.query.olingo.jpa;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
@@ -8,11 +8,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 
-public class AcceptHeaderHttpServletRequestWrapper extends HttpServletRequestWrapper {
-    private final String acceptHeader;
-    public AcceptHeaderHttpServletRequestWrapper(HttpServletRequest request, String acceptHeader) {
+public class OdataHttpServletRequestWrapper extends HttpServletRequestWrapper {
+    private String acceptHeader;
+    private String queryString;
+    public OdataHttpServletRequestWrapper(
+            HttpServletRequest request,
+            String acceptHeader,
+            String queryString) {
         super(request);
         this.acceptHeader = acceptHeader;
+        this.queryString = queryString;
     }
 
     @Override
@@ -31,5 +36,18 @@ public class AcceptHeaderHttpServletRequestWrapper extends HttpServletRequestWra
         } else {
             return super.getHeaders(name);
         }
+    }
+
+    @Override
+    public String getQueryString() {
+        return queryString;
+    }
+
+    public void setAcceptHeader(String acceptHeader) {
+        this.acceptHeader = acceptHeader;
+    }
+
+    public void setQueryString(String queryString) {
+        this.queryString = queryString;
     }
 }

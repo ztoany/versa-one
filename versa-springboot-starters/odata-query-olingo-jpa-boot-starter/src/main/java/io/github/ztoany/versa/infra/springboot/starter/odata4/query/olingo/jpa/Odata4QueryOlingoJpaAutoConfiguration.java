@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sap.olingo.jpa.processor.core.api.JPAODataRequestContext;
 import com.sap.olingo.jpa.processor.core.api.JPAODataServiceContext;
 import com.sap.olingo.jpa.processor.core.api.JPAODataSessionContextAccess;
+import io.github.ztoany.versa.infra.springboot.starter.odata4.query.olingo.jpa.interceptor.OdataRequestCompositeInterceptor;
+import io.github.ztoany.versa.infra.springboot.starter.odata4.query.olingo.jpa.interceptor.OdataRequestIEEE754CompatibleInterceptor;
+import io.github.ztoany.versa.infra.springboot.starter.odata4.query.olingo.jpa.interceptor.OdataRequestInterceptor;
 import jakarta.persistence.EntityManagerFactory;
 import org.apache.olingo.commons.api.ex.ODataException;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -46,5 +49,12 @@ public class Odata4QueryOlingoJpaAutoConfiguration {
     @Scope(scopeName = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
     public JPAODataRequestContext requestContext() {
         return JPAODataRequestContext.with().build();
+    }
+
+    @Bean
+    public OdataRequestInterceptor odataRequestInterceptor(OdataJpaProperties properties) {
+        var interceptor = new OdataRequestCompositeInterceptor();
+        interceptor.addInterceptor(new OdataRequestIEEE754CompatibleInterceptor(properties.getJpa().getForceIeee754Compatible()));
+        return interceptor;
     }
 }
