@@ -94,6 +94,26 @@ OData query filter
 $filter=gender eq default.Gender'MALE'
 ```
 
+### Edm Type Alias
+
+The name cannot contain character `-`.
+
+```java
+@Entity
+@EdmAlias(name = "my_customer")
+public class Customer {
+    @Id
+    @Column(name = "ID")
+    private Long id;
+}
+```
+
+curl
+
+```shell
+/api/odata/my_customers
+```
+
 ### Intercepting OData Query Filter Option
 
 ```java
