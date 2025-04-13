@@ -48,6 +48,7 @@ odata.enableProblemDetails
 
 # set persistence unit name
 # default value: default
+# no need to modify the default value
 odata.jpa.persistenceUnitName
 
 # set the first letter of the attribute name to lowercase
@@ -63,6 +64,61 @@ odata.jpa.typePackages
 ```
 
 ## Development
+
+### Enum Type Support
+
+Use `@EdmEnumeration` on enum type.
+
+```java
+@EdmEnumeration
+public enum Gender {
+    NONE,
+    MALE,
+    FEMALE
+}
+```
+
+Configure `odata.jpa.typePackages`, the value is the package where the enum type is located.
+
+```yaml
+odata:
+  jpa:
+    type-packages:
+      - xxx.xxx
+```
+
+OData query filter
+
+```shell
+# The value of enum type is <PersistenceUnitName>.<enumTypeName>'<StringValue>'
+$filter=gender eq default.Gender'MALE'
+```
+
+### Intercepting OData Query Filter Option
+
+```java
+@Configuration
+public class OdataConfig {
+    private final OdataRequestInterceptor odataRequestInterceptor;
+
+    public OdataConfig(OdataRequestInterceptor odataRequestInterceptor) {
+        this.odataRequestInterceptor = odataRequestInterceptor;
+    }
+
+    @PostConstruct
+    public void init() {
+        if(odataRequestInterceptor instanceof OdataRequestCompositeInterceptor compositeInterceptor) {
+            var queryOptionInterceptor = new OdataRequestQueryOptionInterceptor();
+            var filterOptionByEdmTypeProcessor = new OdataFilterOptionByEdmTypeProcessor();
+            // register your logic
+            // the key is edm type name
+            filterOptionByEdmTypeProcessor.registerOperation("ContactOverviews", (req, text) -> String.format("(%s) and name eq 'aaccdd'", text));
+            queryOptionInterceptor.addProcessor(filterOptionByEdmTypeProcessor);
+            compositeInterceptor.addInterceptor(queryOptionInterceptor);
+        }
+    }
+}
+```
 
 
 

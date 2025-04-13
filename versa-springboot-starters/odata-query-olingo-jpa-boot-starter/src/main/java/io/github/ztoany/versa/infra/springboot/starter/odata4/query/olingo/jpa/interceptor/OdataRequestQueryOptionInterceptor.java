@@ -1,9 +1,11 @@
 package io.github.ztoany.versa.infra.springboot.starter.odata4.query.olingo.jpa.interceptor;
 
+import io.github.ztoany.versa.infra.common.exception.CustomHttpStatusException;
 import io.github.ztoany.versa.infra.springboot.starter.odata4.query.olingo.jpa.OdataHttpServletRequestWrapper;
 import io.github.ztoany.versa.infra.springboot.starter.odata4.query.olingo.jpa.UriDecoder;
 import org.apache.olingo.server.api.uri.queryoption.QueryOption;
 import org.apache.olingo.server.core.uri.parser.UriParserSyntaxException;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,7 +42,7 @@ public class OdataRequestQueryOptionInterceptor implements OdataRequestIntercept
         try {
             return queryString == null ? Collections.emptyList() : UriDecoder.splitAndDecodeOptions(queryString);
         } catch (UriParserSyntaxException e) {
-            throw new RuntimeException(e);
+            throw new CustomHttpStatusException(HttpStatus.BAD_REQUEST.value(), "", e.getMessage());
         }
     }
 }

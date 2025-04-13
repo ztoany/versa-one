@@ -1,6 +1,9 @@
 package io.github.ztoany.versa.infra.springboot.starter.problemdetails.webflux;
 
+import io.github.ztoany.versa.infra.common.exception.BaseException;
 import io.github.ztoany.versa.infra.common.exception.BusinessException;
+import io.github.ztoany.versa.infra.common.exception.CustomHttpStatusException;
+import io.github.ztoany.versa.infra.common.exception.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -26,14 +29,30 @@ public class WebfluxProblemDetailsExceptionHandler extends ResponseEntityExcepti
         return handleExceptionInternal(ex, null, headers, status, exchange);
     }
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    protected Mono<ResponseEntity<Object>> handleEntityNotFoundException(
+            EntityNotFoundException ex,
+            ServerWebExchange exchange) {
+        HttpStatusCode status = HttpStatus.NOT_FOUND;
+        var problemDetail = buildProblemDetail(status, ex);
+        return handleExceptionInternal(ex, problemDetail, null, status, exchange);
+    }
+
     @ExceptionHandler(BusinessException.class)
     protected Mono<ResponseEntity<Object>> handleBusinessException(
             BusinessException ex,
             ServerWebExchange exchange) {
         HttpStatusCode status = HttpStatus.CONFLICT;
-        var problemDetail = ProblemDetail.forStatusAndDetail(status, ex.getErrorMessage());
-        ProblemDetailsBuilder.code(problemDetail, ex.getErrorCode());
-        ProblemDetailsBuilder.timestamp(problemDetail);
+        var problemDetail = buildProblemDetail(status, ex);
+        return handleExceptionInternal(ex, problemDetail, null, status, exchange);
+    }
+
+    @ExceptionHandler(CustomHttpStatusException.class)
+    protected Mono<ResponseEntity<Object>> handleCustomHttpStatusException(
+            CustomHttpStatusException ex,
+            ServerWebExchange exchange) {
+        HttpStatusCode status = HttpStatus.valueOf(ex.getHttpStatusCode());
+        var problemDetail = buildProblemDetail(status, ex);
         return handleExceptionInternal(ex, problemDetail, null, status, exchange);
     }
 
@@ -46,6 +65,13 @@ public class WebfluxProblemDetailsExceptionHandler extends ResponseEntityExcepti
         var problemDetail = ProblemDetail.forStatusAndDetail(status, status.getReasonPhrase());
         ProblemDetailsBuilder.timestamp(problemDetail);
         return super.handleExceptionInternal(ex, problemDetail, null, status, exchange);
+    }
+
+    protected ProblemDetail buildProblemDetail(HttpStatusCode status, BaseException ex) {
+        var problemDetail = ProblemDetail.forStatusAndDetail(status, ex.getErrorMessage());
+        ProblemDetailsBuilder.code(problemDetail, ex.getErrorCode());
+        ProblemDetailsBuilder.timestamp(problemDetail);
+        return problemDetail;
     }
 
     protected ProblemDetail createProblemDetail(Exception ex, HttpStatusCode status, String defaultDetail, String detailMessageCode, Object[] detailMessageArguments, ServerWebExchange exchange) {

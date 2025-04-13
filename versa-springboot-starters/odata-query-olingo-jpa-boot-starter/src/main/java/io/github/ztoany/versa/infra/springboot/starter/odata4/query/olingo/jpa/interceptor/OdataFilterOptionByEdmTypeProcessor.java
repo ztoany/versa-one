@@ -17,7 +17,7 @@ public class OdataFilterOptionByEdmTypeProcessor extends OdataFilterOptionProces
         return operation != null ? operation.apply(requestWrapper, text) : text;
     }
 
-    public void addOperation(String edmType, BiFunction<OdataHttpServletRequestWrapper, String, String> operation) {
+    public void registerOperation(String edmType, BiFunction<OdataHttpServletRequestWrapper, String, String> operation) {
         edmTypeOperationMap.put(edmType, operation);
     }
 

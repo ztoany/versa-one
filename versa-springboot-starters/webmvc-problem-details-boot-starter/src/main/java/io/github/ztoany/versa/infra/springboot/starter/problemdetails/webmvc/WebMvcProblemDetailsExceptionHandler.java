@@ -1,6 +1,9 @@
 package io.github.ztoany.versa.infra.springboot.starter.problemdetails.webmvc;
 
+import io.github.ztoany.versa.infra.common.exception.BaseException;
 import io.github.ztoany.versa.infra.common.exception.BusinessException;
+import io.github.ztoany.versa.infra.common.exception.CustomHttpStatusException;
+import io.github.ztoany.versa.infra.common.exception.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -26,12 +29,24 @@ public class WebMvcProblemDetailsExceptionHandler extends ResponseEntityExceptio
         return this.handleExceptionInternal(ex, (Object)null, headers, status, request);
     }
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    protected ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request) {
+        HttpStatusCode status = HttpStatus.NOT_FOUND;
+        var problemDetail = buildProblemDetail(status, ex);
+        return handleExceptionInternal(ex, problemDetail, null, status, request);
+    }
+
     @ExceptionHandler(BusinessException.class)
     protected ResponseEntity<Object> handleBusinessException(BusinessException ex, WebRequest request) {
         HttpStatusCode status = HttpStatus.CONFLICT;
-        var problemDetail = ProblemDetail.forStatusAndDetail(status, ex.getErrorMessage());
-        ProblemDetailsBuilder.code(problemDetail, ex.getErrorCode());
-        ProblemDetailsBuilder.timestamp(problemDetail);
+        var problemDetail = buildProblemDetail(status, ex);
+        return handleExceptionInternal(ex, problemDetail, null, status, request);
+    }
+
+    @ExceptionHandler(CustomHttpStatusException.class)
+    protected ResponseEntity<Object> handleCustomHttpStatusException(CustomHttpStatusException ex, WebRequest request) {
+        HttpStatusCode status = HttpStatus.valueOf(ex.getHttpStatusCode());
+        var problemDetail = buildProblemDetail(status, ex);
         return handleExceptionInternal(ex, problemDetail, null, status, request);
     }
 
@@ -42,6 +57,13 @@ public class WebMvcProblemDetailsExceptionHandler extends ResponseEntityExceptio
         var problemDetail = ProblemDetail.forStatusAndDetail(status, status.getReasonPhrase());
         ProblemDetailsBuilder.timestamp(problemDetail);
         return super.handleExceptionInternal(ex, problemDetail, null, status, request);
+    }
+
+    protected ProblemDetail buildProblemDetail(HttpStatusCode status, BaseException ex) {
+        var problemDetail = ProblemDetail.forStatusAndDetail(status, ex.getErrorMessage());
+        ProblemDetailsBuilder.code(problemDetail, ex.getErrorCode());
+        ProblemDetailsBuilder.timestamp(problemDetail);
+        return problemDetail;
     }
 
     protected ProblemDetail createProblemDetail(Exception ex, HttpStatusCode status, String defaultDetail, String detailMessageCode, Object[] detailMessageArguments, WebRequest request) {
