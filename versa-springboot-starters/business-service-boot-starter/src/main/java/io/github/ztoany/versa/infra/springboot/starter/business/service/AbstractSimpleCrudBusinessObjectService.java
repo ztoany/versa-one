@@ -12,6 +12,7 @@ public abstract class AbstractSimpleCrudBusinessObjectService<E, ID, INPUT, OUTP
     @Transactional(rollbackFor = Exception.class)
     public OUTPUT create(INPUT input) {
         BusinessObject<E, INPUT> bo = newBusinessObject();
+        beforeCreate(bo);
         bo.onCreate(input);
         var entityRepository = getEntityRepository();
         entityRepository.saveAndFlush(bo.getEntity());
@@ -25,6 +26,7 @@ public abstract class AbstractSimpleCrudBusinessObjectService<E, ID, INPUT, OUTP
         var op = entityRepository.findById(id);
         var entity = op.orElseThrow(() -> entityNotFoundException(id));
         BusinessObject<E, INPUT> bo = buildBusinessObjectFromEntity(entity);
+        beforeUpdate(bo);
         bo.onUpdate(input);
         entityRepository.saveAndFlush(bo.getEntity());
         return businessObjectToDto(bo);
@@ -50,4 +52,6 @@ public abstract class AbstractSimpleCrudBusinessObjectService<E, ID, INPUT, OUTP
     protected abstract OUTPUT businessObjectToDto(BusinessObject<E, INPUT> bo);
     protected abstract BusinessObject<E, INPUT> buildBusinessObjectFromEntity(E entity);
     protected abstract BusinessObject<E, INPUT> newBusinessObject();
+    protected void beforeCreate(BusinessObject<E, INPUT> bo) {}
+    protected void beforeUpdate(BusinessObject<E, INPUT> bo) {}
 }
