@@ -35,8 +35,7 @@ public abstract class AbstractSimpleCrudBusinessObjectService<E, ID, INPUT, OUTP
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteById(ID id) {
-        var entityRepository = getEntityRepository();
-        entityRepository.deleteById(id);
+        deleteByIdInternal(id, true);
     }
 
     @Override
@@ -46,6 +45,19 @@ public abstract class AbstractSimpleCrudBusinessObjectService<E, ID, INPUT, OUTP
         var op = entityRepository.findById(id);
         return op.map(e -> businessObjectToDto(buildBusinessObjectFromEntity(e)))
                 .orElseThrow(() -> entityNotFoundException(id));
+    }
+
+    protected void deleteByIdInternal(ID id, boolean physicalDelete) {
+        var entityRepository = getEntityRepository();
+        var op = entityRepository.findById(id);
+        op.ifPresent(entity -> {
+            BusinessObject<E, INPUT> bo = buildBusinessObjectFromEntity(entity);
+            bo.onDelete();
+        });
+
+        if(physicalDelete) {
+            entityRepository.deleteById(id);
+        }
     }
 
     protected abstract EntityNotFoundException entityNotFoundException(ID id);
