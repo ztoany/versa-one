@@ -1,4 +1,4 @@
-package io.github.ztoany.versa.infra.springboot.starter.hibernate.id.snowflake;
+package io.github.ztoany.versa.infra.springboot.starter.jpa.hibernate.id.snowflake;
 
 import io.github.ztoany.versa.infra.common.id.snowflake.SnowflakeIdImpl;
 import org.hibernate.HibernateException;
@@ -14,7 +14,7 @@ import org.springframework.orm.hibernate5.SpringBeanContainer;
 import java.lang.reflect.Member;
 import java.util.EnumSet;
 
-import static io.github.ztoany.versa.infra.springboot.starter.hibernate.id.snowflake.SnowflakeId.Style.SINGLETON;
+import static io.github.ztoany.versa.infra.springboot.starter.jpa.hibernate.id.snowflake.SnowflakeId.Style.SINGLETON;
 import static org.hibernate.generator.EventTypeSets.INSERT_ONLY;
 
 public class SnowflakeIdGenerator implements BeforeExecutionGenerator {

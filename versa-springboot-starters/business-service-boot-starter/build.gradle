@@ -1,5 +1,6 @@
 dependencies {
     api project(":versa-business-common")
     api project(":versa-infra-common")
+    api project(":versa-springboot")
     api 'org.springframework.boot:spring-boot-starter-data-jpa'
 }

@@ -1,5 +1,6 @@
 package io.github.ztoany.versa.infra.springboot.starter.localization;
 
+import io.github.ztoany.versa.infra.common.exception.AuthenticationFailedException;
 import io.github.ztoany.versa.infra.common.exception.BusinessException;
 import io.github.ztoany.versa.infra.common.exception.EntityNotFoundException;
 import io.github.ztoany.versa.infra.common.exception.SystemException;
@@ -15,8 +16,8 @@ public class ExceptionBuilder {
     }
 
     public static SystemException systemException(String code) {
-        var msg = messageSource.getMessage(code, null, LocaleUtils.handleHttpAcceptLanguage());
-        return new SystemException(code, msg);
+        var locale = LocaleUtils.handleHttpAcceptLanguage();
+        return systemException(code, locale);
     }
 
     public static SystemException systemException(String code, Locale locale) {
@@ -25,8 +26,8 @@ public class ExceptionBuilder {
     }
 
     public static BusinessException businessException(String code) {
-        var msg = messageSource.getMessage(code, null, LocaleUtils.handleHttpAcceptLanguage());
-        return new BusinessException(code, msg);
+        var locale = LocaleUtils.handleHttpAcceptLanguage();
+        return businessException(code, locale);
     }
 
     public static BusinessException businessException(String code, Locale locale) {
@@ -36,9 +37,7 @@ public class ExceptionBuilder {
 
     public static EntityNotFoundException entityNotFoundException(String entityName, String id) {
         var locale = LocaleUtils.handleHttpAcceptLanguage();
-        var entityMsg = messageSource.getMessage(entityName, null, locale);
-        var msg = messageSource.getMessage(PredefinedErrorCodes.ENTITY_NOT_FOUND, new Object[]{entityMsg, id}, locale);
-        return new EntityNotFoundException(PredefinedErrorCodes.ENTITY_NOT_FOUND, msg);
+        return entityNotFoundException(entityName, id, locale);
     }
 
     public static EntityNotFoundException entityNotFoundException(String entityName, String id, Locale locale) {
@@ -49,27 +48,33 @@ public class ExceptionBuilder {
 
     public static EntityNotFoundException entityNotFoundException(String entityName, Long id) {
         var locale = LocaleUtils.handleHttpAcceptLanguage();
-        var entityMsg = messageSource.getMessage(entityName, null, locale);
-        var msg = messageSource.getMessage(PredefinedErrorCodes.ENTITY_NOT_FOUND, new Object[]{entityMsg, id == null ? id : id.toString()}, locale);
-        return new EntityNotFoundException(PredefinedErrorCodes.ENTITY_NOT_FOUND, msg);
+        return entityNotFoundException(entityName, id, locale);
     }
 
     public static EntityNotFoundException entityNotFoundException(String entityName, Long id, Locale locale) {
         var entityMsg = messageSource.getMessage(entityName, null, locale);
-        var msg = messageSource.getMessage(PredefinedErrorCodes.ENTITY_NOT_FOUND, new Object[]{entityMsg, id == null ? id : id.toString()}, locale);
+        var msg = messageSource.getMessage(PredefinedErrorCodes.ENTITY_NOT_FOUND, new Object[]{entityMsg, id}, locale);
         return new EntityNotFoundException(PredefinedErrorCodes.ENTITY_NOT_FOUND, msg);
     }
 
     public static EntityNotFoundException entityNotFoundException(String entityName, Integer id) {
         var locale = LocaleUtils.handleHttpAcceptLanguage();
-        var entityMsg = messageSource.getMessage(entityName, null, locale);
-        var msg = messageSource.getMessage(PredefinedErrorCodes.ENTITY_NOT_FOUND, new Object[]{entityMsg, id}, locale);
-        return new EntityNotFoundException(PredefinedErrorCodes.ENTITY_NOT_FOUND, msg);
+        return entityNotFoundException(entityName, id, locale);
     }
 
     public static EntityNotFoundException entityNotFoundException(String entityName, Integer id, Locale locale) {
         var entityMsg = messageSource.getMessage(entityName, null, locale);
         var msg = messageSource.getMessage(PredefinedErrorCodes.ENTITY_NOT_FOUND, new Object[]{entityMsg, id}, locale);
         return new EntityNotFoundException(PredefinedErrorCodes.ENTITY_NOT_FOUND, msg);
+    }
+
+    public static AuthenticationFailedException authFailedException() {
+        var locale = LocaleUtils.handleHttpAcceptLanguage();
+        return authFailedException(locale);
+    }
+
+    public static AuthenticationFailedException authFailedException(Locale locale) {
+        var msg = messageSource.getMessage(PredefinedErrorCodes.AUTH_FAILED, new Object[]{}, locale);
+        return new AuthenticationFailedException(PredefinedErrorCodes.AUTH_FAILED, msg);
     }
 }

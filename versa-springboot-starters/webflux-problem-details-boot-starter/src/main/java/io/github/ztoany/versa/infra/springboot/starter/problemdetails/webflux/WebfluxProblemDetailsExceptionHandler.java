@@ -1,9 +1,6 @@
 package io.github.ztoany.versa.infra.springboot.starter.problemdetails.webflux;
 
-import io.github.ztoany.versa.infra.common.exception.BaseException;
-import io.github.ztoany.versa.infra.common.exception.BusinessException;
-import io.github.ztoany.versa.infra.common.exception.CustomHttpStatusException;
-import io.github.ztoany.versa.infra.common.exception.EntityNotFoundException;
+import io.github.ztoany.versa.infra.common.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -38,11 +35,20 @@ public class WebfluxProblemDetailsExceptionHandler extends ResponseEntityExcepti
         return handleExceptionInternal(ex, problemDetail, null, status, exchange);
     }
 
+    @ExceptionHandler(AuthenticationFailedException.class)
+    protected Mono<ResponseEntity<Object>> handleAuthenticationFailedException(
+            AuthenticationFailedException ex,
+            ServerWebExchange exchange) {
+        HttpStatusCode status = HttpStatus.UNAUTHORIZED;
+        var problemDetail = buildProblemDetail(status, ex);
+        return handleExceptionInternal(ex, problemDetail, null, status, exchange);
+    }
+
     @ExceptionHandler(BusinessException.class)
     protected Mono<ResponseEntity<Object>> handleBusinessException(
             BusinessException ex,
             ServerWebExchange exchange) {
-        HttpStatusCode status = HttpStatus.CONFLICT;
+        HttpStatusCode status = HttpStatus.BAD_REQUEST;
         var problemDetail = buildProblemDetail(status, ex);
         return handleExceptionInternal(ex, problemDetail, null, status, exchange);
     }

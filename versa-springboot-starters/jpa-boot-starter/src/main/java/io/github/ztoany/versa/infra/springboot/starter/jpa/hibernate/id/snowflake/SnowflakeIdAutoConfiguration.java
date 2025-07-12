@@ -1,4 +1,4 @@
-package io.github.ztoany.versa.infra.springboot.starter.hibernate.id.snowflake;
+package io.github.ztoany.versa.infra.springboot.starter.jpa.hibernate.id.snowflake;
 
 import io.github.ztoany.versa.infra.common.id.snowflake.SnowflakeIdImpl;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
