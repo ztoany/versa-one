@@ -1,9 +1,6 @@
 package io.github.ztoany.versa.infra.springboot.starter.problemdetails.webmvc;
 
-import io.github.ztoany.versa.infra.common.exception.BaseException;
-import io.github.ztoany.versa.infra.common.exception.BusinessException;
-import io.github.ztoany.versa.infra.common.exception.CustomHttpStatusException;
-import io.github.ztoany.versa.infra.common.exception.EntityNotFoundException;
+import io.github.ztoany.versa.infra.common.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
@@ -36,9 +33,16 @@ public class WebMvcProblemDetailsExceptionHandler extends ResponseEntityExceptio
         return handleExceptionInternal(ex, problemDetail, null, status, request);
     }
 
+    @ExceptionHandler(AuthenticationFailedException.class)
+    protected ResponseEntity<Object> handleAuthenticationFailedException(AuthenticationFailedException ex, WebRequest request) {
+        HttpStatusCode status = HttpStatus.UNAUTHORIZED;
+        var problemDetail = buildProblemDetail(status, ex);
+        return handleExceptionInternal(ex, problemDetail, null, status, request);
+    }
+
     @ExceptionHandler(BusinessException.class)
     protected ResponseEntity<Object> handleBusinessException(BusinessException ex, WebRequest request) {
-        HttpStatusCode status = HttpStatus.CONFLICT;
+        HttpStatusCode status = HttpStatus.BAD_REQUEST;
         var problemDetail = buildProblemDetail(status, ex);
         return handleExceptionInternal(ex, problemDetail, null, status, request);
     }

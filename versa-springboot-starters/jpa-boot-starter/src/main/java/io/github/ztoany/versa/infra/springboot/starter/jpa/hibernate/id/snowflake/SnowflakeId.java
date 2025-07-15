@@ -1,4 +1,4 @@
-package io.github.ztoany.versa.infra.springboot.starter.hibernate.id.snowflake;
+package io.github.ztoany.versa.infra.springboot.starter.jpa.hibernate.id.snowflake;
 
 import org.hibernate.annotations.IdGeneratorType;
 
