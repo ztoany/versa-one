@@ -74,7 +74,7 @@ public class ExceptionBuilder {
     }
 
     public static AuthenticationFailedException authFailedException(Locale locale) {
-        var msg = messageSource.getMessage(PredefinedErrorCodes.AUTH_FAILED, new Object[]{}, locale);
+        var msg = messageSource.getMessage(PredefinedErrorCodes.AUTH_FAILED, null, locale);
         return new AuthenticationFailedException(PredefinedErrorCodes.AUTH_FAILED, msg);
     }
 }
