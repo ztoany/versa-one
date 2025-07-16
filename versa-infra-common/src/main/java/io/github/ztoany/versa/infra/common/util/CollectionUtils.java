@@ -21,4 +21,10 @@ public class CollectionUtils {
         ret.removeIf(String::isBlank);
         return ret.stream().map(String::trim).collect(Collectors.toList());
     }
+
+    public static List<String> stringListDistinctRemoveBlankAndTrim(List<String> src) {
+        var ret = CollectionUtils.copyStringList(src);
+        ret.removeIf(String::isBlank);
+        return ret.stream().map(String::trim).distinct().collect(Collectors.toList());
+    }
 }

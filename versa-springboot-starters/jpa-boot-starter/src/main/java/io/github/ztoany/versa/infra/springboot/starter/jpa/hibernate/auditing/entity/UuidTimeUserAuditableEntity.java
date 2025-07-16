@@ -12,7 +12,7 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @MappedSuperclass
-public abstract class UuidTimeUserAuditableEntity<T> extends TimeUserAuditableEntity<T> {
+public abstract class UuidTimeUserAuditableEntity extends TimeUserUuidAuditableEntity {
     @Id
     @UuidGenerator(style = UuidGenerator.Style.RANDOM)
     @Column(name = "id")
