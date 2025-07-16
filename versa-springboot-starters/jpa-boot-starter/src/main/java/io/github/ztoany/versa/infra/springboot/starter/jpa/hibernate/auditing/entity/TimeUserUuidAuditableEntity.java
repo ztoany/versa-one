@@ -15,7 +15,7 @@ import java.time.Instant;
 @Data
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class TimeUserAuditableEntity<T> extends UserAuditableEntity<T> {
+public class TimeUserUuidAuditableEntity extends UserUuidAuditableEntity {
     @CreationTimestamp
     @Column(name = "created_at")
     private Instant createdAt;
