@@ -1,12 +1,26 @@
 package io.github.ztoany.versa.infra.common.util;
 
+import io.github.ztoany.versa.infra.common.db.json.JsonTypeSingleValue;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class CollectionUtils {
     public static List<String> copyStringList(List<String> src) {
+        if(src == null) return new ArrayList<>();
+        return new ArrayList<>(src);
+    }
+
+    public static List<UUID> copyUuidList(List<UUID> src) {
+        if(src == null) return new ArrayList<>();
+        return new ArrayList<>(src);
+    }
+
+    public static List<? extends JsonTypeSingleValue> copyJsonTypeSingleValueList(List<? extends JsonTypeSingleValue> src) {
         if(src == null) return new ArrayList<>();
         return new ArrayList<>(src);
     }
@@ -18,13 +32,26 @@ public class CollectionUtils {
 
     public static List<String> stringListRemoveBlankAndTrim(List<String> src) {
         var ret = CollectionUtils.copyStringList(src);
-        ret.removeIf(String::isBlank);
+        ret.removeIf(e -> Objects.isNull(e) || e.isBlank());
         return ret.stream().map(String::trim).collect(Collectors.toList());
     }
 
     public static List<String> stringListDistinctRemoveBlankAndTrim(List<String> src) {
         var ret = CollectionUtils.copyStringList(src);
-        ret.removeIf(String::isBlank);
+        ret.removeIf(e -> Objects.isNull(e) || e.isBlank());
         return ret.stream().map(String::trim).distinct().collect(Collectors.toList());
+    }
+
+    public static List<UUID> uuidListDistinctRemoveNull(List<UUID> src) {
+        var ret = CollectionUtils.copyUuidList(src);
+        ret.removeIf(Objects::isNull);
+        return ret.stream().distinct().collect(Collectors.toList());
+    }
+
+    public static List<? extends JsonTypeSingleValue> jsonTypeSingleValueListDistinctRemoveBlankAndTrim(List<? extends JsonTypeSingleValue> src) {
+        var ret = CollectionUtils.copyJsonTypeSingleValueList(src);
+        ret.removeIf((e) -> Objects.isNull(e) || Objects.isNull(e.getV()) || e.getV().isBlank());
+        ret.forEach(JsonTypeSingleValue::trim);
+        return ret.stream().distinct().collect(Collectors.toList());
     }
 }
