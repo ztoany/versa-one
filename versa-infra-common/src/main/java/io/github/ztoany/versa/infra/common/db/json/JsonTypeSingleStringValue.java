@@ -1,6 +1,6 @@
 package io.github.ztoany.versa.infra.common.db.json;
 
-public interface JsonTypeSingleValue {
+public interface JsonTypeSingleStringValue {
     String getV();
     void setV(String v);
     default void trim() {

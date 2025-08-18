@@ -1,6 +1,6 @@
 package io.github.ztoany.versa.infra.common.util;
 
-import io.github.ztoany.versa.infra.common.db.json.JsonTypeSingleValue;
+import io.github.ztoany.versa.infra.common.db.json.JsonTypeSingleStringValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ public class CollectionUtils {
         return new ArrayList<>(src);
     }
 
-    public static List<? extends JsonTypeSingleValue> copyJsonTypeSingleValueList(List<? extends JsonTypeSingleValue> src) {
+    public static List<? extends JsonTypeSingleStringValue> copyJsonTypeSingleValueList(List<? extends JsonTypeSingleStringValue> src) {
         if(src == null) return new ArrayList<>();
         return new ArrayList<>(src);
     }
@@ -48,10 +48,10 @@ public class CollectionUtils {
         return ret.stream().distinct().collect(Collectors.toList());
     }
 
-    public static List<? extends JsonTypeSingleValue> jsonTypeSingleValueListDistinctRemoveBlankAndTrim(List<? extends JsonTypeSingleValue> src) {
+    public static List<? extends JsonTypeSingleStringValue> jsonTypeSingleStringValueListDistinctRemoveBlankAndTrim(List<? extends JsonTypeSingleStringValue> src) {
         var ret = CollectionUtils.copyJsonTypeSingleValueList(src);
         ret.removeIf((e) -> Objects.isNull(e) || Objects.isNull(e.getV()) || e.getV().isBlank());
-        ret.forEach(JsonTypeSingleValue::trim);
+        ret.forEach(JsonTypeSingleStringValue::trim);
         return ret.stream().distinct().collect(Collectors.toList());
     }
 }
